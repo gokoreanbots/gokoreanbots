@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/simsimler/gokoreanbots/gkbhttp"
 )
 
 var baseURL string  = "https://api.koreanbots.dev/v1"
@@ -39,7 +38,7 @@ func (c Client) Start() {
 func (c Client) PostServers(servers int) {
 	headers := map[string]string{"Content-Type": "application/json", "token": c.token}
 	seversJSON := []byte(`{"servers": ` + strconv.Itoa(servers) + `}`)
-	err := gkbhttp.Post(baseURL + "/bots/servers", headers, seversJSON)
+	err := Post(baseURL + "/bots/servers", headers, seversJSON)
 	if err != nil {
 		fmt.Println("Error on post servers to koreanbots:", err)
 	}
@@ -49,7 +48,7 @@ func (c Client) PostServers(servers int) {
 // 받는 인자들
 // userID: int / 유저의 ID
 func (c Client) IsVoted(userID string) bool {
-	resp := gkbhttp.Get(baseURL + "/bots/voted/" + userID, map[string]string{"token": c.token})
+	resp := Get(baseURL + "/bots/voted/" + userID, map[string]string{"token": c.token})
 	vD := voteData{}
 	json.Unmarshal([]byte(resp), &vD)
 	return vD.Voted

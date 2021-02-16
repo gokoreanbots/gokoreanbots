@@ -1,4 +1,4 @@
-package gkberrors
+package gokoreanbots
 
 import "errors"
 

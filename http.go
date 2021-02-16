@@ -1,11 +1,9 @@
-package gkbhttp
+package gokoreanbots
 
 import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/simsimler/gokoreanbots/gkberrors"
 )
 
 // Post somthing
@@ -17,7 +15,7 @@ func Post(url string, headers map[string]string, jsonData []byte) error{
 	}
 	res, err := client.Do(req)
 	if err != nil {
-		return gkberrors.ErrFailToPost
+		return ErrFailToPost
 	}
 	defer res.Body.Close()
 	return nil

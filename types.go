@@ -1,4 +1,4 @@
-package gkbtypes
+package gokoreanbots
 
 // Bot type
 type Bot struct {
