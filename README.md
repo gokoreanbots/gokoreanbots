@@ -1,7 +1,7 @@
 # gokoreanbots
 Go 전용 한국 디스코드 봇 리스트 SDK
 
-서버 수 업데이트와 투표 확인 기능을 지원합니다. (랭킹 불러오기는 지원 예정)
+서버 수 업데이트와 투표 확인 기능을 지원합니다. (랭킹 불러오기 지원 예정)
 
 ## 설치 방법
 ```
@@ -20,15 +20,15 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-    "github.com/simsimler/gokoreanbots"
+    	"github.com/simsimler/gokoreanbots"
 )
 
 
 func main() {
 	session, _ := discordgo.New("Bot DiscordBotToken")
-	client := NewClient(session, "KoreanbotsToken", true)
+	client := gokoreanbots.NewClient(session, "KoreanbotsToken", true)
 	session.Open()
-    client.Start()
+    	client.Start()
 	fmt.Println(session.State.User.Username + "(으)로 로그인했습니다.")
 	sc := make(chan os.Signal)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
@@ -50,7 +50,7 @@ import (
 )
 
 var (
-	kbclient = NewClient(session, "Koreanbots Token", true)
+	kbclient = gokoreanbots.NewClient(session, "Koreanbots Token", true)
 	session, _ = discordgo.New("Bot Discord Bot Token")
 )
 
