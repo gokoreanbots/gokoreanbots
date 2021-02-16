@@ -40,7 +40,7 @@ func (c Client) PostServers(servers int) {
 	seversJSON := []byte(`{"servers": ` + strconv.Itoa(servers) + `}`)
 	err := Post(baseURL + "/bots/servers", headers, seversJSON)
 	if err != nil {
-		fmt.Println("Error on post servers to koreanbots:", err)
+		fmt.Println(err)
 	}
 }
 
