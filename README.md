@@ -51,8 +51,8 @@ import (
 )
 
 var (
-	kbclient = gokoreanbots.NewClient(session, "Koreanbots Token", true)
 	session, _ = discordgo.New("Bot Discord Bot Token")
+	kbclient = gokoreanbots.NewClient(session, "Koreanbots Token", true)
 )
 
 func main() {
