@@ -31,7 +31,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	switch m.Content {
 	case "!votecheck":
 		fmt.Println("user used votecheck command")
-		isVoted := kbclient.IsVoted(m.Author.ID)
+		isVoted, _ := kbclient.IsVoted(m.Author.ID)
 		fmt.Println(isVoted)
 		if isVoted {
 			s.ChannelMessageSend(m.ChannelID, "하트를 누르셨군요")

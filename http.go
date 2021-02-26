@@ -6,8 +6,7 @@ import (
 	"net/http"
 )
 
-// Post somthing
-func Post(url string, headers map[string]string, jsonData []byte) error{
+func post(url string, headers map[string]string, jsonData []byte) error {
 	client := http.Client{}
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	for key, value := range headers {
@@ -21,15 +20,20 @@ func Post(url string, headers map[string]string, jsonData []byte) error{
 	return nil
 }
 
-// Get something
-func Get(url string, headers map[string]string) string {
+func get(url string, headers map[string]string) (string, error) {
 	client := http.Client{}
 	req, _ := http.NewRequest("GET", url, nil)
 	for key, value := range headers {
 		req.Header.Add(key, value)
 	}
-	res, _ := client.Do(req)
-	responseByte, _ := ioutil.ReadAll(res.Body)
+	res, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	responseByte, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
 	defer res.Body.Close()
-	return string(responseByte)
+	return string(responseByte), nil
 }

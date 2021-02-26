@@ -38,7 +38,7 @@ func (c Client) Start() {
 func (c Client) PostServers(servers int) {
 	headers := map[string]string{"Content-Type": "application/json", "token": c.token}
 	seversJSON := []byte(`{"servers": ` + strconv.Itoa(servers) + `}`)
-	err := Post(baseURL + "/bots/servers", headers, seversJSON)
+	err := post(baseURL + "/bots/servers", headers, seversJSON)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -47,11 +47,11 @@ func (c Client) PostServers(servers int) {
 // IsVoted : 해당 유저의 봇 투표 여부를 불러옵니다.
 // 받는 인자들
 // userID: int / 유저의 ID
-func (c Client) IsVoted(userID string) bool {
-	resp := Get(baseURL + "/bots/voted/" + userID, map[string]string{"token": c.token})
+func (c Client) IsVoted(userID string) (bool, error) {
+	resp, err := get(baseURL + "/bots/voted/" + userID, map[string]string{"token": c.token})
 	vD := voteData{}
 	json.Unmarshal([]byte(resp), &vD)
-	return vD.Voted
+	return vD.Voted, err
 }
 
 func (c Client) autoPostServers(session *discordgo.Session) {
