@@ -70,7 +70,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	switch m.Content {
 	case "!votecheck":
-		isVoted := kbclient.IsVoted(m.Author.ID)
+		isVoted, _ := kbclient.IsVoted(m.Author.ID)
 		if isVoted {
 			s.ChannelMessageSend(m.ChannelID, "하트를 누르셨군요")
 		} else {
