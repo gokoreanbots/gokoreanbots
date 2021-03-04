@@ -5,7 +5,7 @@ Go 전용 한국 디스코드 봇 리스트 SDK
 
 ## 설치 방법
 ```
-go get github.com/simsimler/gokoreanbots
+go get github.com/gokoreanbots/gokoreanbots
 ```
 
 ## 사용 방법
@@ -20,7 +20,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-    	"github.com/simsimler/gokoreanbots"
+    	"github.com/gokoreanbots/gokoreanbots"
 )
 
 
@@ -47,7 +47,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/simsimler/gokoreanbots"
+	"github.com/gokoreanbots/gokoreanbots"
 )
 
 var (
