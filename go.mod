@@ -1,4 +1,4 @@
-module github.com/simsimler/gokoreanbots
+module github.com/gokoreanbots/gokoreanbots
 
 go 1.15
 
