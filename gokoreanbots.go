@@ -2,14 +2,17 @@ package gokoreanbots
 
 import (
 	"encoding/json"
-	"fmt"
-	"strconv"
+	"log"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-var baseURL string  = "https://api.koreanbots.dev/v1"
+const (
+	baseURL string  = "https://api.koreanbots.dev/v1"
+	baseURLv2 string = "https://api.koreanbots.dev/v2" // For Future
+)
+
 
 // Client : 봇 클라이언트입니다.
 type Client struct {
@@ -23,6 +26,10 @@ type voteData struct {
 	Voted 	bool
 }
 
+type serverSendTemplate struct {
+	Servers int `json:"servers"`
+}
+
 // Start : 서버 수 자동 업데이트를 시작합니다.
 // discordgo.Session이 오픈된 후 서버 수 자동 업데이트를 시작해주세요.
 // autoPost를 false로 하실 경우 서버 수가 자동으로 업데이트 되지 않습니다.
@@ -33,30 +40,36 @@ func (c Client) Start() {
 }
 
 // PostServers : 서버 수를 업데이트합니다.
-// 받는 인자들
-// servers: int / 봇의 서버 수
-func (c Client) PostServers(servers int) {
+
+func (c Client) PostServers() {
 	headers := map[string]string{"Content-Type": "application/json", "token": c.token}
-	seversJSON := []byte(`{"servers": ` + strconv.Itoa(servers) + `}`)
+	strJSON, _ := json.Marshal(serverSendTemplate{
+		Servers: len(c.session.State.Guilds),
+	})
+	seversJSON := strJSON
 	err := post(baseURL + "/bots/servers", headers, seversJSON)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
 
 // IsVoted : 해당 유저의 봇 투표 여부를 불러옵니다.
 // 받는 인자들
 // userID: int / 유저의 ID
-func (c Client) IsVoted(userID string) (bool, error) {
+func (c Client) IsVoted(userID string) bool {
 	resp, err := get(baseURL + "/bots/voted/" + userID, map[string]string{"token": c.token})
+	if err != nil {
+		log.Println(err)
+		return false
+	}
 	vD := voteData{}
 	json.Unmarshal([]byte(resp), &vD)
-	return vD.Voted, err
+	return vD.Voted
 }
 
 func (c Client) autoPostServers(session *discordgo.Session) {
 	for {
-		c.PostServers(len(session.State.Guilds))
+		c.PostServers()
 		time.Sleep(time.Minute * 30)
 	}
 }

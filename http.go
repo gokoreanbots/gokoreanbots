@@ -12,28 +12,36 @@ func post(url string, headers map[string]string, jsonData []byte) error {
 	for key, value := range headers {
 		req.Header.Add(key, value)
 	}
-	res, err := client.Do(req)
-	if err != nil {
-		return ErrFailToPost
+	resp, _ := client.Do(req)
+	switch resp.StatusCode {
+	case http.StatusOK:
+		return nil
+	case http.StatusTooManyRequests:
+		return ErrRateLimited
+	case http.StatusUnauthorized:
+		return ErrUnauthorized
 	}
-	defer res.Body.Close()
+	defer resp.Body.Close()
 	return nil
 }
 
-func get(url string, headers map[string]string) (string, error) {
+func get(url string, headers map[string]string) (response string, err error) {
 	client := http.Client{}
 	req, _ := http.NewRequest("GET", url, nil)
 	for key, value := range headers {
 		req.Header.Add(key, value)
 	}
-	res, err := client.Do(req)
-	if err != nil {
-		return "", err
+	resp, _ := client.Do(req)
+	switch resp.StatusCode {
+	case http.StatusOK:
+		responseByte, _ := ioutil.ReadAll(resp.Body)
+		response = string(responseByte)
+		err = nil
+	case http.StatusBadRequest:
+		responseByte, _ := ioutil.ReadAll(resp.Body)
+		response = string(responseByte)
+		err = ErrUnauthorized
 	}
-	responseByte, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return "", err
-	}
-	defer res.Body.Close()
-	return string(responseByte), nil
+	defer resp.Body.Close()
+	return
 }

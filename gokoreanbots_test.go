@@ -11,15 +11,15 @@ import (
 )
 
 var (
-	kbclient = NewClient(session, "", true)
 	session, _ = discordgo.New("Bot ")
+	kbclient = NewClient(session, "", true)
 )
 
 func TestRun(t *testing.T) {
 	session.Open()
 	fmt.Println(session.State.User.Username + "로 로그인했습니다.")
 	session.AddHandler(messageCreate)
-	sc := make(chan os.Signal)
+	sc := make(chan os.Signal, 2)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
 	<-sc
 }
@@ -30,8 +30,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	switch m.Content {
 	case "!votecheck":
-		fmt.Println("user used votecheck command")
-		isVoted, _ := kbclient.IsVoted(m.Author.ID)
+		isVoted := kbclient.IsVoted(m.Author.ID)
 		fmt.Println(isVoted)
 		if isVoted {
 			s.ChannelMessageSend(m.ChannelID, "하트를 누르셨군요")
