@@ -2,13 +2,13 @@ package gokoreanbots
 
 // Bot type
 type Bot struct {
-	ID			string
+	ID		string
 	Name		string
 	Servers		int
 	Votes		int
 	Intro		string
 	Avatar		string
-	URL			string
+	URL		string
 	Category 	Category
 	Tag 		string
 	State		BotState
@@ -17,7 +17,7 @@ type Bot struct {
 	Boosted		bool
 	Vanity		string
 	Banner		string
-	Bg			string
+	Bg		string
 }
 
 // Category of bot
@@ -40,7 +40,7 @@ type Category struct {
 
 // BotState state of bot
 type BotState struct {
-	OK 			bool
+	OK 		bool
 	Archived	bool
 	Private		bool
 }
