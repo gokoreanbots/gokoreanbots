@@ -3,75 +3,85 @@ package gokoreanbots
 import (
 	"encoding/json"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
 
 const (
-	baseURL string  = "https://api.koreanbots.dev/v1"
-	baseURLv2 string = "https://api.koreanbots.dev/v2" // For Future
+	baseURL string = "https://api.koreanbots.dev/v1"
+	// baseURLv2 string = "https://api.koreanbots.dev/v2" // For Future
 )
-
 
 // Client : 봇 클라이언트입니다.
 type Client struct {
-	token 		string
-	autoPost	bool
-	session		*discordgo.Session
+	token    string
+	autoPost bool
+	session  *discordgo.Session
 }
 
 type voteData struct {
-	Code	int
-	Voted 	bool
+	Code  int  `json:"code"`
+	Voted bool `json:"voted"`
 }
 
 type serverSendTemplate struct {
 	Servers int `json:"servers"`
 }
 
-// Start : 서버 수 자동 업데이트를 시작합니다.
-// discordgo.Session이 오픈된 후 서버 수 자동 업데이트를 시작해주세요.
-// autoPost를 false로 하실 경우 서버 수가 자동으로 업데이트 되지 않습니다.
-func (c Client) Start() {
-	if c.autoPost {
-		go c.autoPostServers(c.session)
-	}
-}
-
 // PostServers : 서버 수를 업데이트합니다.
-
-func (c Client) PostServers() {
+func (c Client) PostServers() error {
 	headers := map[string]string{"Content-Type": "application/json", "token": c.token}
-	strJSON, _ := json.Marshal(serverSendTemplate{
+	serverJSON, _ := json.Marshal(serverSendTemplate{
 		Servers: len(c.session.State.Guilds),
 	})
-	seversJSON := strJSON
-	err := post(baseURL + "/bots/servers", headers, seversJSON)
+	err := post(baseURL+"/bots/servers", &headers, serverJSON)
 	if err != nil {
-		log.Println(err)
 	}
+	return err
 }
 
 // IsVoted : 해당 유저의 봇 투표 여부를 불러옵니다.
 // 받는 인자들
 // userID: int / 유저의 ID
 func (c Client) IsVoted(userID string) bool {
-	resp, err := get(baseURL + "/bots/voted/" + userID, map[string]string{"token": c.token})
+	resp, err := get(baseURL+"/bots/voted/"+userID, map[string]string{"token": c.token})
 	if err != nil {
-		log.Println(err)
+		log.Println("[GoKoreanbots] failed to get vote because of " + err.Error())
 		return false
 	}
 	vD := voteData{}
-	json.Unmarshal([]byte(resp), &vD)
+	err = json.Unmarshal([]byte(resp), &vD)
+	if err != nil {
+		return false
+	}
 	return vD.Voted
 }
 
-func (c Client) autoPostServers(session *discordgo.Session) {
+func (c Client) autoPostServers() {
 	for {
-		c.PostServers()
+		err := c.PostServers()
+		if err != nil {
+			log.Println("[GoKoreanbots] failed to post servers because of " + err.Error())
+		}
 		time.Sleep(time.Minute * 30)
 	}
+}
+
+func (c Client) GetBots(page int) *Bots {
+	resp, err := get(baseURL+"/bots/get?page="+strconv.Itoa(page), nil)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	var parsedResp getBotsResponse
+	err = json.Unmarshal([]byte(resp), &parsedResp)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return &parsedResp.Data
 }
 
 // NewClient : 새로운 클라이언트를 생성합니다.
@@ -81,8 +91,12 @@ func (c Client) autoPostServers(session *discordgo.Session) {
 // autoPost: bool / 서버 수 자동 포스트 여부
 func NewClient(session *discordgo.Session, token string, autoPost bool) Client {
 	client := Client{
-		token: token,
+		token:    token,
 		autoPost: autoPost,
+		session:  session,
+	}
+	if autoPost {
+		go client.autoPostServers()
 	}
 	return client
 }

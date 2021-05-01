@@ -2,45 +2,29 @@ package gokoreanbots
 
 // Bot type
 type Bot struct {
-	ID		string
-	Name		string
-	Servers		int
-	Votes		int
-	Intro		string
-	Avatar		string
-	URL		string
-	Category 	Category
-	Tag 		string
-	State		BotState
-	Verified	bool
-	Trusted		bool
-	Boosted		bool
-	Vanity		string
-	Banner		string
-	Bg		string
+	ID         string      `json:"id"`
+	Name       string      `json:"name"`
+	Servers    int         `json:"servers"`
+	Votes      int         `json:"votes"`
+	Intro      string      `json:"intro"`
+	Avatar     string      `json:"avatar"`
+	URL        interface{} `json:"url"`
+	Category   []string    `json:"category"`
+	Tag        string      `json:"tag"`
+	State      string      `json:"state"`
+	Verified   int         `json:"verified"`
+	Trusted    int         `json:"trusted"`
+	Boosted    int         `json:"boosted"`
+	Vanity     interface{} `json:"vanity"`
+	Banner     interface{} `json:"banner"`
+	BackGround interface{} `json:"bg"`
 }
 
-// Category of bot
-type Category struct {
-	Mod 		bool
-	Music 		bool
-	GameRecord	bool
-	WebDash 	bool
-	Logging 	bool
-	Gamble 		bool
-	Game		bool
-	Meme		bool
-	Leveling	bool
-	Utility		bool
-	Translate	bool
-	Talk		bool
-	NSFW		bool
-	Search		bool
-}
+type Bots []Bot
 
-// BotState state of bot
-type BotState struct {
-	OK 		bool
-	Archived	bool
-	Private		bool
+type getBotsResponse struct {
+	Code        int  `json:"code"`
+	Data        Bots `json:"data"`
+	CurrentPage int  `json:"currentPage"`
+	TotalPage   int  `json:"totalPage"`
 }

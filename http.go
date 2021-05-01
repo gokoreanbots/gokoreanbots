@@ -2,27 +2,43 @@ package gokoreanbots
 
 import (
 	"bytes"
-	"io/ioutil"
+	"io"
+	"log"
 	"net/http"
+	"strconv"
+	"time"
 )
 
-func post(url string, headers map[string]string, jsonData []byte) error {
+func post(url string, headers *map[string]string, jsonData []byte) error {
 	client := http.Client{}
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	for key, value := range headers {
-		req.Header.Add(key, value)
+	if headers != nil {
+		for key, value := range *headers {
+			req.Header.Add(key, value)
+		}
 	}
-	resp, _ := client.Do(req)
-	switch resp.StatusCode {
-	case http.StatusOK:
+	for tries := 0; tries < 5; tries++ {
+		resp, _ := client.Do(req)
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil
+		case http.StatusTooManyRequests:
+			remainLimit, _ := strconv.Atoi(resp.Header.Get("x-ratelimit-remaining"))
+			log.Printf("[GoKoreanbots] rate limited. retry after %s seconds", strconv.Itoa(remainLimit))
+			time.Sleep(time.Second * time.Duration(time.Now().Unix()-int64(remainLimit)))
+			continue
+		case http.StatusUnauthorized:
+			return ErrUnauthorized
+		case http.StatusBadRequest:
+			return ErrBadRequest
+		}
+		err := resp.Body.Close()
+		if err != nil {
+			return nil
+		}
 		return nil
-	case http.StatusTooManyRequests:
-		return ErrRateLimited
-	case http.StatusUnauthorized:
-		return ErrUnauthorized
 	}
-	defer resp.Body.Close()
-	return nil
+	return ErrTooManyRequests
 }
 
 func get(url string, headers map[string]string) (response string, err error) {
@@ -34,14 +50,20 @@ func get(url string, headers map[string]string) (response string, err error) {
 	resp, _ := client.Do(req)
 	switch resp.StatusCode {
 	case http.StatusOK:
-		responseByte, _ := ioutil.ReadAll(resp.Body)
+		responseByte, _ := io.ReadAll(resp.Body)
 		response = string(responseByte)
 		err = nil
 	case http.StatusBadRequest:
-		responseByte, _ := ioutil.ReadAll(resp.Body)
+		responseByte, _ := io.ReadAll(resp.Body)
 		response = string(responseByte)
 		err = ErrUnauthorized
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			return
+		}
+	}(resp.Body)
+	log.Println(response)
 	return
 }
