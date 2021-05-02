@@ -7,7 +7,7 @@ import (
 
 func TestGetBots(t *testing.T) {
 	var kbclient Client
-	fmt.Println(kbclient.GetBots(1))
+	fmt.Println(kbclient.GetBots(5))
 }
 
 func TestGetBot(t *testing.T) {

@@ -7,7 +7,7 @@ type Bot struct {
 	Servers  int         `json:"servers"`
 	Votes    int         `json:"votes"`
 	Intro    string      `json:"intro"`
-	Avatar   string      `json:"avatar"`
+	Avatar   interface{} `json:"avatar"`
 	URL      interface{} `json:"url"`
 	Category []string    `json:"category"`
 	Tag      string      `json:"tag"`
@@ -24,11 +24,11 @@ type BotDetail struct {
 	ID     string `json:"id"`
 	Date   int    `json:"date"`
 	Owners []struct {
-		Id       string   `json:"id"`
-		Username string   `json:"username"`
-		Tag      string   `json:"tag"`
-		Avatar   string   `json:"avatar"`
-		Bots     []string `json:"bots"`
+		Id       string      `json:"id"`
+		Username string      `json:"username"`
+		Tag      string      `json:"tag"`
+		Avatar   interface{} `json:"avatar"`
+		Bots     []string    `json:"bots"`
 	} `json:"owners"`
 	Lib      string      `json:"lib"`
 	Prefix   string      `json:"prefix"`
@@ -42,7 +42,7 @@ type BotDetail struct {
 	Category []string    `json:"category"`
 	Status   string      `json:"status"`
 	Name     string      `json:"name"`
-	Avatar   string      `json:"avatar"`
+	Avatar   interface{} `json:"avatar"`
 	Tag      string      `json:"tag"`
 	Verified int         `json:"verified"`
 	Trusted  int         `json:"trusted"`
