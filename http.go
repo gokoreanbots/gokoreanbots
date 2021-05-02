@@ -24,7 +24,7 @@ func post(url string, headers *map[string]string, jsonData []byte) error {
 			return nil
 		case http.StatusTooManyRequests:
 			remainLimit, _ := strconv.Atoi(resp.Header.Get("x-ratelimit-remaining"))
-			log.Printf("[GoKoreanbots] rate limited. retry after %s seconds", strconv.Itoa(remainLimit))
+			log.Printf("[GoKOREANBOTS] rate limited. retry after %d seconds", remainLimit)
 			time.Sleep(time.Second * time.Duration(time.Now().Unix()-int64(remainLimit)))
 			continue
 		case http.StatusUnauthorized:
@@ -57,6 +57,10 @@ func get(url string, headers map[string]string) (response string, err error) {
 		responseByte, _ := io.ReadAll(resp.Body)
 		response = string(responseByte)
 		err = ErrUnauthorized
+	case http.StatusTooManyRequests:
+		responseByte, _ := io.ReadAll(resp.Body)
+		response = string(responseByte)
+		err = ErrTooManyRequests
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -64,6 +68,5 @@ func get(url string, headers map[string]string) (response string, err error) {
 			return
 		}
 	}(resp.Body)
-	log.Println(response)
 	return
 }
