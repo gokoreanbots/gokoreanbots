@@ -1,6 +1,5 @@
 package gokoreanbots
 
-// Bot type
 type Bot struct {
 	ID       string      `json:"id"`
 	Name     string      `json:"name"`
