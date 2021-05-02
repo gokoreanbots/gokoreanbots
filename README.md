@@ -25,8 +25,8 @@ import (
 
 
 func main() {
-	session, _ := discordgo.New("Bot DiscordBotToken")
-	client := gokoreanbots.NewClient(session, "KoreanbotsToken", true)
+	session, _ := discordgo.New("Discord Bot Token")
+	client := gokoreanbots.NewClient(session, "Koreanbots Token", true)
 	session.Open()
     	client.Start()
 	fmt.Println(session.State.User.Username + "(으)로 로그인했습니다.")
