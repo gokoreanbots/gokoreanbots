@@ -3,6 +3,7 @@ package gokoreanbots
 import (
 	"encoding/json"
 	"log"
+	"net/url"
 	"strconv"
 	"time"
 
@@ -95,6 +96,40 @@ func (c Client) GetBot(id string) *BotDetail {
 		return nil
 	}
 	var parsedResp getBotResponse
+	err = json.Unmarshal([]byte(resp), &parsedResp)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return &parsedResp.Data
+}
+
+// SearchBots : KOREANBOTS에서 해당 쿼리로 봇을 검색합니다.
+// 받는 인자들
+// query: string / 검색어
+// page: int / 조회할 페이지 번호
+func (c Client) SearchBots(query string, page int) *Bots {
+	resp, err := get(baseURL+"/bots/search"+"?q="+url.QueryEscape(query)+"&page="+strconv.Itoa(page), nil)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	var parsedResp getBotsResponse
+	err = json.Unmarshal([]byte(resp), &parsedResp)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return &parsedResp.Data
+}
+
+func (c Client) GetBotsByCategory(category string, page int) *Bots {
+	resp, err := get(baseURL+"/bots/category/"+category+"?page="+strconv.Itoa(page), nil)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	var parsedResp getBotsResponse
 	err = json.Unmarshal([]byte(resp), &parsedResp)
 	if err != nil {
 		log.Println(err)
