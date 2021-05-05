@@ -33,7 +33,7 @@ type serverSendTemplate struct {
 
 // PostServers : 서버 수를 업데이트합니다.
 func (c Client) PostServers() error {
-	headers := map[string]string{"Content-Type": "application/json", "token": c.token}
+	headers := headers{"Content-Type": "application/json", "token": c.token}
 	serverJSON, _ := json.Marshal(serverSendTemplate{
 		Servers: len(c.session.State.Guilds),
 	})
@@ -45,7 +45,7 @@ func (c Client) PostServers() error {
 // 받는 인자들
 // userID: int / 확인할 유저 ID
 func (c Client) IsVoted(userID string) bool {
-	resp, err := get(baseURL+"/bots/voted/"+userID, map[string]string{"token": c.token})
+	resp, err := get(baseURL+"/bots/voted/"+userID, headers{"token": c.token})
 	if err != nil {
 		log.Println("[GoKOREANBOTS] failed to get vote because of " + err.Error())
 		return false

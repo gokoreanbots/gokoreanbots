@@ -55,6 +55,8 @@ type BotDetail struct {
 
 type Bots []Bot
 
+type headers map[string]string
+
 type getBotsResponse struct {
 	Code        int  `json:"code"`
 	Data        Bots `json:"data"`

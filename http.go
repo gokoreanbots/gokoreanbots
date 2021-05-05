@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func post(url string, headers *map[string]string, jsonData []byte) error {
+func post(url string, headers *headers, jsonData []byte) error {
 	client := http.Client{}
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if headers != nil {
@@ -41,7 +41,7 @@ func post(url string, headers *map[string]string, jsonData []byte) error {
 	return ErrTooManyRequests
 }
 
-func get(url string, headers map[string]string) (response string, err error) {
+func get(url string, headers headers) (response string, err error) {
 	client := http.Client{}
 	req, _ := http.NewRequest("GET", url, nil)
 	for key, value := range headers {

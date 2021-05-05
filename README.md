@@ -5,7 +5,7 @@ Go 전용 한국 디스코드 봇 리스트 SDK
 
 ## 설치 방법
 ```
-go get github.com/gokoreanbots/gokoreanbots
+go get github.com/simsimler/gokoreanbots
 ```
 
 ## 사용 방법
@@ -20,7 +20,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-    	"github.com/gokoreanbots/gokoreanbots"
+	"github.com/simsimler/gokoreanbots"
 )
 
 
@@ -28,7 +28,7 @@ func main() {
 	session, _ := discordgo.New("Discord Bot Token")
 	client := gokoreanbots.NewClient(session, "Koreanbots Token", true)
 	session.Open()
-    	client.Start()
+	client.Start()
 	fmt.Println(session.State.User.Username + "(으)로 로그인했습니다.")
 	sc := make(chan os.Signal)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
@@ -47,7 +47,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/gokoreanbots/gokoreanbots"
+	"github.com/simsimler/gokoreanbots"
 )
 
 var (
@@ -70,7 +70,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 	switch m.Content {
 	case "!votecheck":
-		isVoted, _ := kbclient.IsVoted(m.Author.ID)
+		isVoted := kbclient.IsVoted(m.Author.ID)
 		if isVoted {
 			s.ChannelMessageSend(m.ChannelID, "하트를 누르셨군요")
 		} else {
