@@ -1,70 +1,83 @@
 package gokoreanbots
 
-type Bot struct {
-	ID       string      `json:"id"`
-	Name     string      `json:"name"`
-	Servers  int         `json:"servers"`
-	Votes    int         `json:"votes"`
-	Intro    string      `json:"intro"`
-	Avatar   interface{} `json:"avatar"`
-	URL      interface{} `json:"url"`
-	Category []string    `json:"category"`
-	Tag      string      `json:"tag"`
-	State    string      `json:"state"`
-	Verified int         `json:"verified"`
-	Trusted  int         `json:"trusted"`
-	Boosted  int         `json:"boosted"`
-	Vanity   interface{} `json:"vanity"`
-	Banner   interface{} `json:"banner"`
-	Bg       interface{} `json:"bg"`
+import "github.com/bwmarrin/discordgo"
+
+// Client : 봇 클라이언트입니다.
+type Client struct {
+	token    string
+	autoPost bool
+	session  *discordgo.Session
 }
 
-type BotDetail struct {
-	ID     string `json:"id"`
-	Date   int    `json:"date"`
-	Owners []struct {
-		Id       string      `json:"id"`
-		Username string      `json:"username"`
-		Tag      string      `json:"tag"`
-		Avatar   interface{} `json:"avatar"`
-		Bots     []string    `json:"bots"`
-	} `json:"owners"`
+type Bot struct {
+	Id       string      `json:"id"`
+	Flags    int         `json:"flags"`
+	Owners   []Owner     `json:"owners"`
 	Lib      string      `json:"lib"`
 	Prefix   string      `json:"prefix"`
 	Votes    int         `json:"votes"`
 	Servers  int         `json:"servers"`
 	Intro    string      `json:"intro"`
 	Desc     string      `json:"desc"`
-	Web      interface{} `json:"web"`
-	Git      interface{} `json:"git"`
+	Web      string      `json:"web"`
+	Git      string      `json:"git"`
 	Url      string      `json:"url"`
 	Category []string    `json:"category"`
 	Status   string      `json:"status"`
-	Name     string      `json:"name"`
-	Avatar   interface{} `json:"avatar"`
-	Tag      string      `json:"tag"`
-	Verified int         `json:"verified"`
-	Trusted  int         `json:"trusted"`
 	Discord  string      `json:"discord"`
-	Boosted  int         `json:"boosted"`
 	State    string      `json:"state"`
-	Vanity   interface{} `json:"vanity"`
-	Bg       interface{} `json:"bg"`
-	Banner   interface{} `json:"banner"`
+	Vanity   string      `json:"vanity"`
+	Bg       string      `json:"bg"`
+	Banner   string      `json:"banner"`
+	Tag      string      `json:"tag"`
+	Avatar   interface{} `json:"avatar"`
+	Name     string      `json:"name"`
+}
+
+type User struct {
+	Id       string      `json:"id"`
+	Flags    int         `json:"flags"`
+	Github   interface{} `json:"github"`
+	Tag      string      `json:"tag"`
+	Username string      `json:"username"`
+	Bots     *Bots       `json:"bots"`
+}
+
+type Owner struct {
+	User
+	Bots []string `json:"bots"`
 }
 
 type Bots []Bot
 
-type headers map[string]string
+type strMap map[string]string
 
-type getBotsResponse struct {
-	Code        int  `json:"code"`
-	Data        Bots `json:"data"`
-	CurrentPage int  `json:"currentPage"`
-	TotalPage   int  `json:"totalPage"`
+type voteResp struct {
+	Code int `json:"code"`
+	Data struct {
+		Voted    bool  `json:"voted"`
+		LastVote int64 `json:"lastVote"`
+	} `json:"data"`
+	Version int `json:"version"`
 }
 
-type getBotResponse struct {
-	Code int       `json:"code"`
-	Data BotDetail `json:"data"`
+type postServer struct {
+	Servers int `json:"servers"`
+}
+
+type getBotResp struct {
+	Code    int `json:"code"`
+	Data    Bot `json:"data"`
+	Version int `json:"version"`
+}
+
+type getBotsResp struct {
+	Code int `json:"code"`
+	Data struct {
+		Type        string `json:"type"`
+		Data        Bots   `json:"data"`
+		CurrentPage int    `json:"currentPage"`
+		TotalPage   int    `json:"totalPage"`
+	} `json:"data"`
+	Version int `json:"version"`
 }
