@@ -26,9 +26,8 @@ import (
 
 func main() {
 	session, _ := discordgo.New("Discord Bot Token")
-	client := gokoreanbots.NewClient(session, "Koreanbots Token", true)
 	session.Open()
-	client.Start()
+	client := gokoreanbots.NewClient(session, "Koreanbots Token", true)
 	fmt.Println(session.State.User.Username + "(으)로 로그인했습니다.")
 	sc := make(chan os.Signal)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM)
@@ -52,7 +51,7 @@ import (
 
 var (
 	session, _ = discordgo.New("Bot Discord Bot Token")
-	kbclient = gokoreanbots.NewClient(session, "Koreanbots Token", true)
+	kbclient = gokoreanbots.NewClient(session, "Koreanbots Token", false)
 )
 
 func main() {
